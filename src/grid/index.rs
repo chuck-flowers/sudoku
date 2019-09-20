@@ -92,8 +92,8 @@ impl Display for SquareIndex {
     }
 }
 
-impl From<SudokuIndex> for SquareIndex {
-    fn from(index: SudokuIndex) -> Self {
+impl From<&SudokuIndex> for SquareIndex {
+    fn from(index: &SudokuIndex) -> Self {
         SquareIndex(index.0 / 3)
     }
 }
@@ -141,7 +141,7 @@ mod tests {
 
         for a in args.iter() {
             let sudoku_index = SudokuIndex::try_from(a.index_val).unwrap();
-            let actual_square_index: SquareIndex = sudoku_index.into();
+            let actual_square_index: SquareIndex = SquareIndex::from(&sudoku_index);
             let expected_square_index = SquareIndex::try_from(a.square_val).unwrap();
             assert_eq!(actual_square_index, expected_square_index);
         }

@@ -1,3 +1,4 @@
+use crate::grid::index::SquareIndex;
 use crate::grid::index::SudokuIndex;
 
 /// A location on the sudoku grid described by a row and column index.
@@ -39,5 +40,24 @@ impl Coordinate {
 
     pub fn col<'a>(&'a self) -> &'a SudokuIndex {
         &self.col
+    }
+}
+
+pub struct SquareCoordinate {
+    x: SquareIndex,
+    y: SquareIndex
+}
+
+impl SquareCoordinate {
+    pub fn new(x: SquareIndex, y: SquareIndex) -> Self {
+        Self { x, y }
+    }
+}
+
+impl From<&Coordinate> for SquareCoordinate {
+    fn from(coor: &Coordinate) -> Self {
+        let x = coor.row().into();
+        let y = coor.col().into();
+        SquareCoordinate::new(x, y)
     }
 }
