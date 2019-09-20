@@ -8,12 +8,10 @@ use actions::AppliedAction;
 use actions::UnappliedAction;
 use actions::WriteAction;
 use grid::Grid;
-use simple_logger::init_with_level;
 use std::time::SystemTime;
 
 #[derive(Debug)]
 pub enum MainError {
-    InitializationError { err: Box<std::error::Error> },
     InvalidPartialPuzzle,
     NoSolutionFound,
 }
@@ -58,10 +56,6 @@ impl ProgressBar {
 }
 
 fn main() -> Result<(), MainError> {
-    if let Err(err) = init_with_level(log::Level::Error) {
-        return Err(MainError::InitializationError { err: Box::new(err) });
-    }
-
     let path_buf = build_path();
     let mut grid = io::parse_grid(&path_buf).unwrap();
     println!("Loaded the puzzle:\n{}", grid);
