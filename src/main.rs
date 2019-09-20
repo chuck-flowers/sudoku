@@ -75,13 +75,12 @@ fn main() -> Result<(), MainError> {
 
         // Keep iterating on the last applied action in the history while the grid is invalid
         while !grid.is_valid() {
-
             // While there are still actions in the history, rollback and modify them.
             while let Some(last_action) = history.pop() {
                 let mut reverted_action = last_action.revert(&mut grid);
-                
-                /* Attempt to modify the reverted action. If a new version of 
-                 * it is available, reapply. If not, allow for the next action 
+
+                /* Attempt to modify the reverted action. If a new version of
+                 * it is available, reapply. If not, allow for the next action
                  * to be rolled back as well. */
                 if reverted_action.increment() {
                     history.push(reverted_action.apply(&mut grid));
