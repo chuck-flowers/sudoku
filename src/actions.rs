@@ -1,4 +1,4 @@
-use crate::grid::Coordinate;
+use crate::grid::coordinate::Coordinate;
 use crate::grid::Grid;
 use crate::grid::SudokuValue;
 use std::fmt::Debug;
