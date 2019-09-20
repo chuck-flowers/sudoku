@@ -2,6 +2,7 @@ pub mod error;
 pub mod index;
 pub mod iter;
 
+use index::SquareIndex;
 use index::SudokuIndex;
 use iter::RowIter;
 use iter::{ColIter, SquareIndexIter};
@@ -96,6 +97,14 @@ impl Coordinate {
                 None
             }
         })
+    }
+
+    pub fn row<'a>(&'a self) -> &'a SudokuIndex {
+        &self.row
+    }
+
+    pub fn col<'a>(&'a self) -> &'a SudokuIndex {
+        &self.col
     }
 }
 
