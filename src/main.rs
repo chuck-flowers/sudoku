@@ -54,7 +54,7 @@ fn main() -> Result<(), MainError> {
     let finish = SystemTime::now();
 
     if let Ok(time) = finish.duration_since(start) {
-        println!("Answer computed in {} seconds", time.as_secs());
+        println!("Answer computed in {} seconds", time.as_millis() as f32 / 1000.0);
     }
 
     println!("{}", grid);
