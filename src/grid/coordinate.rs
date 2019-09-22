@@ -52,6 +52,14 @@ impl SquareCoordinate {
     pub fn new(x: SquareIndex, y: SquareIndex) -> Self {
         Self { x, y }
     }
+
+    pub fn x(&self) -> &SquareIndex {
+        &self.x
+    }
+
+    pub fn y(&self) -> &SquareIndex {
+        &self.y
+    }
 }
 
 impl From<&Coordinate> for SquareCoordinate {
