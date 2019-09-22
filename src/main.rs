@@ -4,9 +4,7 @@ mod actions;
 mod grid;
 mod io;
 
-use actions::AppliedAction;
 use actions::UnappliedAction;
-use actions::WriteAction;
 use grid::Grid;
 use std::time::SystemTime;
 
@@ -60,7 +58,7 @@ fn main() -> Result<(), MainError> {
     let mut grid = io::parse_grid(&path_buf).unwrap();
     println!("Loaded the puzzle:\n{}", grid);
 
-    let mut history: Vec<AppliedAction<WriteAction>> = Vec::new();
+    let mut history = Vec::new();
     let mut empty_slots = grid.all_empty_slots();
     let mut progress_bar = ProgressBar::new(empty_slots.len());
 
@@ -70,11 +68,11 @@ fn main() -> Result<(), MainError> {
         progress_bar.increment();
 
         // Apply the next action, and push it into the history
-        let action = UnappliedAction::new(WriteAction::new(empty_slot));
+        let action = UnappliedAction::new(empty_slot);
         history.push(action.apply(&mut grid));
 
         // Keep iterating on the last applied action in the history while the grid is invalid
-        while !grid.is_valid() {
+        while !grid.is_valid(history.last().unwrap().coordinate()) {
             // While there are still actions in the history, rollback and modify them.
             while let Some(last_action) = history.pop() {
                 let mut reverted_action = last_action.revert(&mut grid);
@@ -86,7 +84,7 @@ fn main() -> Result<(), MainError> {
                     history.push(reverted_action.apply(&mut grid));
                     break;
                 } else {
-                    let coordinate = reverted_action.into().into();
+                    let coordinate = reverted_action.into();
                     empty_slots.push(coordinate);
                     progress_bar.decrement();
                 }
