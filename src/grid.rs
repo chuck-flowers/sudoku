@@ -4,10 +4,11 @@ pub mod index;
 pub mod iter;
 
 pub use coordinate::Coordinate;
+use coordinate::SquareCoordinate;
 use index::SudokuIndex;
 use iter::RowIter;
-use iter::{ColIter, SquareIndexIter};
-use iter::{IndexIter, SquareIter};
+use iter::ColIter;
+use iter::SquareIter;
 use std::fmt::Display;
 use std::{collections::HashSet, convert::TryFrom, ops::Deref};
 
@@ -86,32 +87,32 @@ impl Grid {
     }
 
     /// Confirms that the grid is in a valid state.
-    pub fn is_valid(&self) -> bool {
-        self.rows_are_valid() && self.cols_are_valid() && self.squares_are_valid()
+    pub fn is_valid(&self, dirty_coordinate: &Coordinate) -> bool {
+        if !self.row_is_valid(dirty_coordinate.row()) {
+            false
+        } else if !self.col_is_valid(dirty_coordinate.col()) {
+            false
+        } else if !self.square_is_valid(SquareCoordinate::from(dirty_coordinate)) {
+            false
+        } else {
+            true
+        }
     }
 
     /// Confirms that the row rules are in a valid state
-    fn rows_are_valid(&self) -> bool {
-        IndexIter::new().all(|row| !self.contains_duplicate(RowIter::new(row)))
+    fn row_is_valid(&self, dirty_row: &SudokuIndex) -> bool {
+        !self.contains_duplicate(&mut RowIter::new(*dirty_row))
     }
 
     /// Confirms the column rules are in a valid state
-    fn cols_are_valid(&self) -> bool {
-        IndexIter::new().all(|col| !self.contains_duplicate(ColIter::new(col)))
+    fn col_is_valid(&self, dirty_col: &SudokuIndex) -> bool {
+        !self.contains_duplicate(&mut ColIter::new(*dirty_col))
     }
 
     /// Confirms the square rules are in a valid state
-    fn squares_are_valid(&self) -> bool {
-        for y in SquareIndexIter::new() {
-            for x in SquareIndexIter::new() {
-                let square = SquareIter::new(x, y);
-                if self.contains_duplicate(square) {
-                    return false;
-                }
-            }
-        }
-
-        true
+    fn square_is_valid(&self, dirty_square: SquareCoordinate) -> bool {
+        let square = SquareIter::new(*dirty_square.x(), *dirty_square.y());
+        !self.contains_duplicate(square)
     }
 
     /// Determines whether or not a range contains a duplicate value
