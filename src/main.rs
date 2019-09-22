@@ -14,45 +14,6 @@ pub enum MainError {
     NoSolutionFound,
 }
 
-struct ProgressBar {
-    total: usize,
-    curr: usize,
-}
-
-impl ProgressBar {
-    fn new(total: usize) -> Self {
-        Self { total, curr: 0 }
-    }
-
-    fn update_progress(&mut self, curr: usize) {
-        self.curr = curr;
-        self.render();
-    }
-
-    fn increment(&mut self) {
-        self.update_progress(self.curr + 1);
-    }
-
-    fn decrement(&mut self) {
-        self.update_progress(self.curr - 1);
-    }
-
-    fn render(&self) {
-        let mut buff = String::new();
-        buff.push_str("\r[");
-        for _ in 0..self.curr {
-            buff.push('=');
-        }
-
-        for _ in 0..(self.total - self.curr) {
-            buff.push(' ');
-        }
-
-        buff.push(']');
-        print!("{} {}/{}", buff, self.curr, self.total);
-    }
-}
-
 fn main() -> Result<(), MainError> {
     let path_buf = build_path();
     let mut grid = io::parse_grid(&path_buf).unwrap();
@@ -60,13 +21,11 @@ fn main() -> Result<(), MainError> {
 
     let mut history = Vec::new();
     let mut empty_slots = grid.all_empty_slots();
-    let mut progress_bar = ProgressBar::new(empty_slots.len());
-
+    
     // Continue altering the grid until a correct solution has been reached.
     let start = SystemTime::now();
     while let Some(empty_slot) = empty_slots.pop() {
-        progress_bar.increment();
-
+        
         // Apply the next action, and push it into the history
         let action = UnappliedAction::new(empty_slot);
         history.push(action.apply(&mut grid));
@@ -86,7 +45,6 @@ fn main() -> Result<(), MainError> {
                 } else {
                     let coordinate = reverted_action.into();
                     empty_slots.push(coordinate);
-                    progress_bar.decrement();
                 }
             }
         }
