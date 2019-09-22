@@ -30,33 +30,6 @@ impl Iterator for IndexIter {
     }
 }
 
-pub struct SquareIndexIter {
-    next: SquareIndex,
-    has_next: bool,
-}
-
-impl SquareIndexIter {
-    pub fn new() -> Self {
-        SquareIndexIter {
-            next: SquareIndex::zero(),
-            has_next: true,
-        }
-    }
-}
-
-impl Iterator for SquareIndexIter {
-    type Item = SquareIndex;
-    fn next(&mut self) -> Option<Self::Item> {
-        if self.has_next {
-            let next = self.next;
-            self.has_next = self.next.inc();
-            Some(next)
-        } else {
-            None
-        }
-    }
-}
-
 pub struct RowIter {
     row: SudokuIndex,
     iter: IndexIter,

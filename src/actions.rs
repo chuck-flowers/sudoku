@@ -47,10 +47,6 @@ impl UnappliedAction {
         }
     }
 
-    pub fn coordinate(&self) -> &Coordinate {
-        &self.coordinate
-    }
-
     /// Increments the action
     pub fn increment(&mut self) -> bool {
         self.value.inc()

@@ -61,19 +61,6 @@ pub struct SquareIndex(IndexValue);
 impl SquareIndex {
     const INDEX_MAX: IndexValue = 2;
 
-    pub fn zero() -> Self {
-        Self(0)
-    }
-
-    pub fn inc(&mut self) -> bool {
-        if self.0 < Self::INDEX_MAX {
-            self.0 += 1;
-            true
-        } else {
-            false
-        }
-    }
-
     pub fn start(&self) -> SudokuIndex {
         SudokuIndex(self.0 * 3)
     }
